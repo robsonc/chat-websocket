@@ -17,6 +17,7 @@ io.on('connection', function(client){
     usernames[client.id] = 'Guest' + client.id;
     
     client.send('Welcome ' + usernames[client.id]);
+    client.broadcast.emit('message', usernames[client.id] + ' enter in room');
        
     client.on('set nickname', function(nickname){
         var oldNickname = usernames[client.id];
@@ -30,6 +31,7 @@ io.on('connection', function(client){
     
     client.on('disconnect', function(){
         console.log('user disconnected');
+        client.broadcast.emit('message', usernames[client.id] + ' has left the room.');
     });
 });
 

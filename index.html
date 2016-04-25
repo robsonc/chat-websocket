@@ -27,9 +27,11 @@
         $('form').submit(function(){
             var msg = $('#m').val();
             
-            if (/^\/nickname/.test(msg)) {
-              var nickname = msg.substring(10, msg.length);
+            if (/^nickname/.test(msg)) {
+              var nickname = msg.substring(9, msg.length);
               socket.emit('set nickname', nickname);
+            } else if (/^clear/.test(msg)) {
+              $('#messages li').remove();  
             } else {
               socket.emit('chat message', msg);  
             }
