@@ -10,19 +10,29 @@ app.get('/', function(req, res){
     res.sendFile(__dirname + '/index.html');
 });
 
-io.on('connection', function(socket){
-    console.log('a user connected');
-   
-    socket.on('chat message', function(msg){
-        socket.emit('chat message', msg);
-        socket.broadcast.emit('chat message', msg);
+io.on('connection', function(client){
+
+    var usernames = {};
+    
+    usernames[client.id] = 'Guest' + client.id;
+    
+    client.send('Welcome ' + usernames[client.id]);
+       
+    client.on('set nickname', function(nickname){
+        var oldNickname = usernames[client.id];
+        usernames[client.id] = nickname;
+        io.emit('message', oldNickname + ' change your nickname to ' + nickname);
+    });   
+       
+    client.on('chat message', function(msg){
+        io.emit('chat message', usernames[client.id], msg);
     });
     
-    socket.on('disconnect', function(){
+    client.on('disconnect', function(){
         console.log('user disconnected');
     });
 });
 
-http.listen(3000, function(){
-   console.log('App listening on port 3000'); 
+http.listen(80, function(){
+   console.log('App listening on port 80'); 
 });

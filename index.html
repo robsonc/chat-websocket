@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
   <head>
+    <meta name="viewport" content="initial-scale=1">
     <title>Socket.IO chat</title>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -24,13 +25,22 @@
     <script>
         var socket = io();
         $('form').submit(function(){
-            socket.emit('chat message', $('#m').val());
+            var msg = $('#m').val();
+            
+            if (/^\/nickname/.test(msg)) {
+              var nickname = msg.substring(10, msg.length);
+              socket.emit('set nickname', nickname);
+            } else {
+              socket.emit('chat message', msg);  
+            }
+            
             $('#m').val('');
+            
             return false;
         });
         
-        socket.on('chat message', function(msg){
-            $('#messages').append($('<li>').text(msg));
+        socket.on('chat message', function(username, msg){
+            $('#messages').append($('<li>').text(username + ': ' + msg));
         });
         
         socket.on('message', function(msg){
