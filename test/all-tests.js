@@ -1,5 +1,5 @@
 var chai = require('chai');
-var expect = chai.Expect();
+var expect = chai.expect;
 
 describe('Test WebSocket App', function(){
     it('should pass', function(){
